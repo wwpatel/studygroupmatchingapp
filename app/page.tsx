@@ -1,65 +1,117 @@
-import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import {
+  Sparkles,
+  MessageCircle,
+  FileText,
+  Radar,
+  Users2,
+  ArrowRight,
+} from "lucide-react";
 
-export default function Home() {
+export default async function LandingPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) redirect("/dashboard");
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex min-h-screen flex-col bg-paper">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
+        <div className="flex items-center gap-2">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-ink text-paper">
+            <Sparkles className="size-5" strokeWidth={2} />
+          </div>
+          <span className="font-display text-xl font-semibold tracking-tight text-ink">
+            Nova
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/login">
+            <Button variant="ghost" size="sm">
+              Log in
+            </Button>
+          </Link>
+          <Link href="/signup">
+            <Button size="sm">Get started</Button>
+          </Link>
+        </div>
+      </header>
+
+      <main className="bg-nova-burst flex-1">
+        <section className="mx-auto flex max-w-4xl flex-col items-center px-6 pb-24 pt-16 text-center">
+          <span className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-line bg-paper-raised px-3 py-1 text-xs font-medium text-ink-soft">
+            <Sparkles className="size-3.5 text-ember" />
+            Built for AIRES @ UC Berkeley
+          </span>
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-6xl">
+            Study smarter,
+            <br />
+            <span className="text-ember">not alone.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 max-w-xl text-balance text-lg text-ink-soft">
+            Nova pinpoints exactly where you&apos;re stuck, turns your notes into
+            real practice, and matches you with classmates whose strengths
+            cover your gaps.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <div className="mt-8 flex items-center gap-3">
+            <Link href="/signup">
+              <Button size="lg">
+                Start studying <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="secondary">
+                I have an account
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        <section className="mx-auto grid max-w-5xl grid-cols-1 gap-4 px-6 pb-24 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              icon: MessageCircle,
+              title: "AI help chat",
+              body: "Asks a quick diagnostic question first, then explains exactly where you're stuck.",
+            },
+            {
+              icon: FileText,
+              title: "Instant practice",
+              body: "Upload notes — get a quiz, a full test, and flashcards, ready to take.",
+            },
+            {
+              icon: Radar,
+              title: "Skill profile",
+              body: "A living map of your mastery per topic, updated after every attempt.",
+            },
+            {
+              icon: Users2,
+              title: "Complementary groups",
+              body: "Matched with classmates who are strong exactly where you're not.",
+            },
+          ].map(({ icon: Icon, title, body }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-line bg-paper-raised p-5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+            >
+              <div className="mb-3 flex size-9 items-center justify-center rounded-lg bg-ember-soft">
+                <Icon className="size-4.5 text-ember-dark" strokeWidth={1.75} />
+              </div>
+              <h3 className="font-display text-base font-semibold text-ink">{title}</h3>
+              <p className="mt-1.5 text-sm text-ink-soft">{body}</p>
+            </div>
+          ))}
+        </section>
       </main>
+
+      <footer className="border-t border-line px-6 py-6 text-center text-xs text-ink-faint">
+        Nova — an AIRES @ UC Berkeley hackathon project.
+      </footer>
     </div>
   );
 }
