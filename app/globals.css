@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #faf6ef;
+  --color-paper-raised: #ffffff;
+  --color-ink: #18140e;
+  --color-ink-soft: #57503f;
+  --color-ink-faint: #8a8271;
+  --color-line: #e7ddc9;
+  --color-line-soft: #f0e9d8;
+
+  --color-ember: #ff5a1f;
+  --color-ember-dark: #d6430d;
+  --color-ember-soft: #ffe6d9;
+
+  --color-gold: #e8a90d;
+  --color-gold-soft: #fbedc4;
+
+  --color-teal: #0e6b60;
+  --color-teal-dark: #0a4f47;
+  --color-teal-soft: #d9efe9;
+
+  --color-plum: #7a3b69;
+
+  --color-danger: #c81e3a;
+  --color-danger-soft: #fbdde2;
+
+  --shadow-color: 24 20 14;
+}
+
+:root[data-theme="dark"] {
+  --color-paper: #15120d;
+  --color-paper-raised: #1d1912;
+  --color-ink: #f3ecdd;
+  --color-ink-soft: #c7bda4;
+  --color-ink-faint: #8a8271;
+  --color-line: #2f2a1f;
+  --color-line-soft: #241f17;
+
+  --color-ember-soft: #3a1f13;
+  --color-gold-soft: #322508;
+  --color-teal-soft: #0f2b26;
+  --color-danger-soft: #3a1119;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-paper: #15120d;
+    --color-paper-raised: #1d1912;
+    --color-ink: #f3ecdd;
+    --color-ink-soft: #c7bda4;
+    --color-ink-faint: #8a8271;
+    --color-line: #2f2a1f;
+    --color-line-soft: #241f17;
+
+    --color-ember-soft: #3a1f13;
+    --color-gold-soft: #322508;
+    --color-teal-soft: #0f2b26;
+    --color-danger-soft: #3a1119;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-raised: var(--color-paper-raised);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-line: var(--color-line);
+  --color-line-soft: var(--color-line-soft);
+
+  --color-ember: var(--color-ember);
+  --color-ember-dark: var(--color-ember-dark);
+  --color-ember-soft: var(--color-ember-soft);
+
+  --color-gold: var(--color-gold);
+  --color-gold-soft: var(--color-gold-soft);
+
+  --color-teal: var(--color-teal);
+  --color-teal-dark: var(--color-teal-dark);
+  --color-teal-soft: var(--color-teal-soft);
+
+  --color-plum: var(--color-plum);
+
+  --color-danger: var(--color-danger);
+  --color-danger-soft: var(--color-danger-soft);
+
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-flip: flip 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-pulse-soft: pulse-soft 2.2s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes flip {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+code,
+pre,
+kbd,
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+::selection {
+  background: var(--color-ember);
+  color: white;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 999px;
+}
+
+/* Radial "nova burst" background used sparingly on marketing / empty states */
+.bg-nova-burst {
+  background-image: radial-gradient(
+      circle at 15% 10%,
+      color-mix(in srgb, var(--color-ember) 18%, transparent) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      color-mix(in srgb, var(--color-teal) 16%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      color-mix(in srgb, var(--color-gold) 14%, transparent) 0%,
+      transparent 50%
+    );
+}
