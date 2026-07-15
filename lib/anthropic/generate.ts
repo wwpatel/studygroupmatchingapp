@@ -13,6 +13,7 @@ import type {
   Flashcard,
   MatchedStudentSummary,
   GroupAgenda,
+  MatchReasoning,
 } from "@/lib/types/content";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -155,11 +156,11 @@ export async function gradeShortAnswers(
 export async function generateMatchReasoning(
   students: MatchedStudentSummary[],
   subject: string,
-): Promise<{ headline: string; reasoning: string; pairings: unknown[] }> {
+): Promise<MatchReasoning> {
   const system = `You are Nova, explaining why a study group of high school ${subject} students was matched. Reference their actual topic strengths and growth areas by name. Be specific and encouraging. Use the emit_match_reasoning tool to return your output.`;
   const userPrompt = `Group members and their skill profiles:\n${JSON.stringify(students, null, 2)}\n\nExplain why this group is a good complementary match, and identify 2-3 specific pairings where one student's strength covers another's growth area.`;
 
-  return callTool(system, userPrompt, matchReasoningTool, 2048);
+  return callTool<MatchReasoning>(system, userPrompt, matchReasoningTool, 2048);
 }
 
 export async function generateSessionAgenda(

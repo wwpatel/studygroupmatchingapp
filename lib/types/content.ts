@@ -90,6 +90,19 @@ export interface GroupAgenda {
   items: GroupAgendaItem[];
 }
 
+export interface MatchPairing {
+  topic: string;
+  strongStudentName: string;
+  growthStudentName: string;
+  note: string;
+}
+
+export interface MatchReasoning {
+  headline: string;
+  reasoning: string;
+  pairings: MatchPairing[];
+}
+
 export interface ChatDiagnosticState {
   awaitingDiagnosticAnswer: boolean;
   topic?: string;
