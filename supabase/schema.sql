@@ -263,39 +263,45 @@ create policy "attempts owner select" on public.attempts
 create policy "attempts owner insert" on public.attempts
   for insert with check (student_id = auth.uid());
 
+-- Security-definer helper so the group_members policy doesn't subquery its
+-- own table (which causes "infinite recursion detected in policy" — Postgres
+-- error 42P17). Runs as the function owner (bypasses RLS on group_members),
+-- so the recursive check terminates instead of re-triggering itself.
+create or replace function public.is_group_member(target_group_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.group_members
+    where group_id = target_group_id and student_id = auth.uid()
+  );
+$$;
+
 -- groups: visible to members.
 create policy "groups select member" on public.groups
-  for select using (
-    id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for select using (public.is_group_member(id));
 
 -- group_members: visible to fellow members.
 create policy "group_members select member" on public.group_members
-  for select using (
-    group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for select using (public.is_group_member(group_id));
 
 -- sessions: visible/writable by group members.
 create policy "sessions select member" on public.sessions
-  for select using (
-    group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for select using (public.is_group_member(group_id));
 create policy "sessions insert member" on public.sessions
-  for insert with check (
-    group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for insert with check (public.is_group_member(group_id));
 create policy "sessions update member" on public.sessions
-  for update using (
-    group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for update using (public.is_group_member(group_id));
 
 -- checkins: owner writes own; group members can view all check-ins for their sessions.
 create policy "checkins select member" on public.checkins
   for select using (
     session_id in (
       select s.id from public.sessions s
-      join public.group_members gm on gm.group_id = s.group_id
-      where gm.student_id = auth.uid()
+      where public.is_group_member(s.group_id)
     )
   );
 create policy "checkins insert own" on public.checkins
@@ -303,14 +309,9 @@ create policy "checkins insert own" on public.checkins
 
 -- messages: group members only.
 create policy "messages select member" on public.messages
-  for select using (
-    group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for select using (public.is_group_member(group_id));
 create policy "messages insert member" on public.messages
-  for insert with check (
-    student_id = auth.uid()
-    and group_id in (select group_id from public.group_members where student_id = auth.uid())
-  );
+  for insert with check (student_id = auth.uid() and public.is_group_member(group_id));
 
 -- chat_history: owner only.
 create policy "chat_history owner select" on public.chat_history

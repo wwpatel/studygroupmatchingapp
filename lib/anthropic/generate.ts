@@ -1,4 +1,4 @@
-import { anthropic, MODEL } from "./client";
+import { getAnthropicClient, MODEL } from "./client";
 import {
   quizTool,
   flashcardTool,
@@ -32,6 +32,7 @@ async function callTool<T>(
 ): Promise<T> {
   let response: Anthropic.Message;
   try {
+    const anthropic = getAnthropicClient();
     response = await anthropic.messages.create({
       model: MODEL,
       max_tokens: maxTokens,
