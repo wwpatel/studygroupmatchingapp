@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/Badge";
 import { GenerateButton } from "@/components/materials/GenerateButton";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
-import { FileQuestion, ClipboardList, Layers, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { FileQuestion, ClipboardList, Layers, ArrowRight, MessageCircle } from "lucide-react";
 
 const TYPE_META = {
   quiz: { icon: FileQuestion, label: "Quiz", generateLabel: "Generate a quiz" },
@@ -51,7 +52,15 @@ export default async function MaterialDetailPage({ params }: { params: { id: str
         </h1>
         <Badge tone="gold">{material.subject}</Badge>
       </div>
-      <p className="mt-1 text-sm text-ink-faint">Uploaded {formatDate(material.uploaded_at)}</p>
+      <div className="mt-1 flex items-center justify-between">
+        <p className="text-sm text-ink-faint">Uploaded {formatDate(material.uploaded_at)}</p>
+        <Link href={`/chat?material=${material.id}`}>
+          <Button size="sm" variant="secondary">
+            <MessageCircle className="size-3.5" />
+            Ask Nova about this
+          </Button>
+        </Link>
+      </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {(Object.keys(TYPE_META) as Array<keyof typeof TYPE_META>).map((type) => {

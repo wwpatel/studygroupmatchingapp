@@ -3,15 +3,28 @@
 import { useEffect, useRef, useState } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { Button } from "@/components/ui/Button";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Sparkles, FileText, X } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-export function ChatWindow({ initialMessages }: { initialMessages: Message[] }) {
+interface MaterialRef {
+  id: string;
+  title: string;
+  subject: string;
+}
+
+export function ChatWindow({
+  initialMessages,
+  material,
+}: {
+  initialMessages: Message[];
+  material?: MaterialRef | null;
+}) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [activeMaterial, setActiveMaterial] = useState<MaterialRef | null>(material ?? null);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +46,7 @@ export function ChatWindow({ initialMessages }: { initialMessages: Message[] }) 
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content }),
+        body: JSON.stringify({ message: content, materialId: activeMaterial?.id }),
       });
 
       if (!res.ok || !res.body) {
@@ -66,6 +79,20 @@ export function ChatWindow({ initialMessages }: { initialMessages: Message[] }) 
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col md:h-screen">
+      {activeMaterial && (
+        <div className="flex items-center gap-2 border-b border-line bg-ember-soft px-4 py-2.5 text-sm text-ember-dark md:px-8">
+          <FileText className="size-4 shrink-0" />
+          <span className="min-w-0 truncate">
+            Chatting about <strong>{activeMaterial.title}</strong> ({activeMaterial.subject})
+          </span>
+          <button
+            onClick={() => setActiveMaterial(null)}
+            className="ml-auto flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium hover:bg-ember/15"
+          >
+            <X className="size-3" /> Clear
+          </button>
+        </div>
+      )}
       <div ref={scrollRef} className="scrollbar-thin flex-1 space-y-4 overflow-y-auto px-4 py-6 md:px-8">
         {messages.length === 0 ? (
           <div className="mx-auto mt-16 max-w-md text-center">
@@ -76,7 +103,9 @@ export function ChatWindow({ initialMessages }: { initialMessages: Message[] }) 
               Ask Nova anything
             </h2>
             <p className="mt-1.5 text-sm text-ink-soft">
-              Stuck on a problem? Nova will figure out exactly where, then explain it there.
+              {activeMaterial
+                ? `Ask anything about "${activeMaterial.title}" — Nova will answer grounded in it.`
+                : "Stuck on a problem? Nova will figure out exactly where, then explain it there."}
             </p>
           </div>
         ) : (

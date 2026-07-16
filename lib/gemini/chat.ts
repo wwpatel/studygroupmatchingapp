@@ -70,15 +70,23 @@ export async function classifyMessage(message: string): Promise<"ACADEMIC" | "OF
   }
 }
 
-export async function* streamAcademicReply(history: ChatTurn[], message: string) {
+export async function* streamAcademicReply(
+  history: ChatTurn[],
+  message: string,
+  material?: { title: string; subject: string; content: string } | null,
+) {
   const ai = getGeminiClient();
   const contents = [...toGeminiContents(history), { role: "user" as const, parts: [{ text: message }] }];
+
+  const systemInstruction = material
+    ? `${ACADEMIC_SYSTEM_PROMPT}\n\nThe student is currently asking about this uploaded course material — ground your answers in it and quote/reference it directly where relevant. If the question can't be answered from this material, say so and answer from general knowledge instead.\n\nMaterial: "${material.title}" (${material.subject})\n---\n${material.content.slice(0, 12000)}\n---`
+    : ACADEMIC_SYSTEM_PROMPT;
 
   const stream = await ai.models.generateContentStream({
     model: CHAT_MODEL,
     contents,
     config: {
-      systemInstruction: ACADEMIC_SYSTEM_PROMPT,
+      systemInstruction,
       maxOutputTokens: 2048,
       // Keep the tutoring chat snappy — thinking adds meaningful latency
       // per turn and isn't needed for the level of reasoning this requires.

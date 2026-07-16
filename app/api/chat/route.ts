@@ -16,8 +16,21 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const message = String(body?.message ?? "").trim();
+  const materialId = body?.materialId ? String(body.materialId) : null;
   if (!message) {
     return NextResponse.json({ error: "Message is required" }, { status: 400 });
+  }
+
+  let material: { title: string; subject: string; content: string } | null = null;
+  if (materialId) {
+    const { data: materialRow } = await supabase
+      .from("materials")
+      .select("title, subject, content, student_id")
+      .eq("id", materialId)
+      .single();
+    if (materialRow && materialRow.student_id === user.id) {
+      material = { title: materialRow.title, subject: materialRow.subject, content: materialRow.content };
+    }
   }
 
   const { data: historyRows } = await supabase
@@ -67,7 +80,7 @@ export async function POST(request: Request) {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        for await (const delta of streamAcademicReply(history, message)) {
+        for await (const delta of streamAcademicReply(history, message, material)) {
           fullText += delta;
           controller.enqueue(encoder.encode(delta));
         }
