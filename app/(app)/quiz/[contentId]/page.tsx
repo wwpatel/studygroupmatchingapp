@@ -24,7 +24,10 @@ export default async function QuizPage({ params }: { params: { contentId: string
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-8 md:py-10">
-      <Link href={`/materials/${generated.material_id}`} className="text-sm text-ink-soft hover:text-ink">
+      <Link
+        href={generated.material_id ? `/materials/${generated.material_id}` : "/chat"}
+        className="text-sm text-ink-soft hover:text-ink"
+      >
         ← Back
       </Link>
       <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">

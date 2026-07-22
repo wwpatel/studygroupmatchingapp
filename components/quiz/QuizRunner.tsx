@@ -6,6 +6,7 @@ import type { QuizContent } from "@/lib/types/content";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/Spinner";
 import { Badge } from "@/components/ui/Badge";
+import { celebrate } from "@/components/gamification/Celebration";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
@@ -51,6 +52,7 @@ export function QuizRunner({
         setSubmitting(false);
         return;
       }
+      celebrate({ xpAwarded: data.xpAwarded, newBadges: data.newBadges });
       router.push(`/quiz/${contentId}/results/${data.attemptId}`);
     } catch {
       setError("Something went wrong. Try again.");
@@ -69,7 +71,7 @@ export function QuizRunner({
 
       <div key={question.id} className="animate-fade-up rounded-2xl border border-line bg-paper-raised p-6">
         <div className="mb-3 flex items-center gap-2">
-          <Badge tone="gold">{question.topic}</Badge>
+          <Badge tone="butter">{question.topic}</Badge>
           <Badge tone="neutral">{question.difficulty}</Badge>
         </div>
         <p className="font-display text-lg font-medium leading-snug text-ink">{question.prompt}</p>
@@ -86,14 +88,14 @@ export function QuizRunner({
                   className={cn(
                     "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
                     selected
-                      ? "border-ember bg-ember-soft text-ink"
+                      ? "border-lavender bg-lavender-soft text-ink"
                       : "border-line hover:border-ink/30",
                   )}
                 >
                   <span
                     className={cn(
                       "flex size-5 shrink-0 items-center justify-center rounded-full border text-xs",
-                      selected ? "border-ember bg-ember text-white" : "border-line-soft",
+                      selected ? "border-lavender bg-lavender text-black" : "border-line-soft",
                     )}
                   >
                     {selected && <Check className="size-3" />}
@@ -108,7 +110,7 @@ export function QuizRunner({
               onChange={(e) => setAnswer(e.target.value)}
               rows={4}
               placeholder="Type your answer..."
-              className="w-full rounded-xl border border-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink outline-none focus:border-ink/40 focus:ring-2 focus:ring-ember/15"
+              className="w-full rounded-xl border border-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink outline-none focus:border-ink/40 focus:ring-2 focus:ring-lavender/30"
             />
           )}
         </div>

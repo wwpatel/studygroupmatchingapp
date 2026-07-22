@@ -4,7 +4,7 @@ import { ChatWindow } from "@/components/chat/ChatWindow";
 export default async function ChatPage({
   searchParams,
 }: {
-  searchParams: { material?: string };
+  searchParams: { material?: string; prompt?: string };
 }) {
   const supabase = await createClient();
   const {
@@ -38,6 +38,7 @@ export default async function ChatPage({
         content: h.content,
       }))}
       material={material}
+      initialPrompt={searchParams.prompt ?? null}
     />
   );
 }

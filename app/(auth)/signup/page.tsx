@@ -46,7 +46,7 @@ export default function SignupPage() {
             <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">{state.error}</p>
           )}
           {state?.success && (
-            <p className="rounded-lg bg-teal-soft px-3 py-2 text-sm text-teal-dark">{state.success}</p>
+            <p className="rounded-lg bg-sage-soft px-3 py-2 text-sm text-sage-deep">{state.success}</p>
           )}
           <SubmitButton />
         </form>

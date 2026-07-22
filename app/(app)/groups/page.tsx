@@ -55,7 +55,7 @@ export default async function GroupsPage() {
               if (!group) return null;
               return (
                 <Link key={group.id} href={`/groups/${group.id}`}>
-                  <Card className="transition-colors hover:border-ember/40">
+                  <Card className="transition-colors hover:border-lavender/40">
                     <CardBody className="flex items-center justify-between py-4">
                       <div>
                         <p className="font-medium text-ink">{group.name}</p>

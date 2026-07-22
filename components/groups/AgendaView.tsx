@@ -9,7 +9,7 @@ export function AgendaView({ agenda }: { agenda: GroupAgenda }) {
       <CardBody>
         <div className="flex items-center justify-between">
           <h3 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
-            <ListChecks className="size-4.5 text-ember-dark" />
+            <ListChecks className="size-4.5 text-blush-deep" />
             Session agenda
           </h3>
           <Badge tone="neutral">{agenda.totalMinutes} min</Badge>
@@ -31,7 +31,7 @@ export function AgendaView({ agenda }: { agenda: GroupAgenda }) {
                 </div>
                 <p className="mt-0.5 text-sm text-ink-soft">{item.focus}</p>
                 {item.leadStudentName && (
-                  <p className="mt-1 text-xs text-teal-dark">Led by {item.leadStudentName}</p>
+                  <p className="mt-1 text-xs text-sage-deep">Led by {item.leadStudentName}</p>
                 )}
               </div>
             </li>

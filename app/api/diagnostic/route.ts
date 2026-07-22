@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { generateDiagnosticQuiz, AIGenerationError } from "@/lib/anthropic/generate";
+import { generateDiagnosticQuiz, AIGenerationError } from "@/lib/gemini/generate";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";

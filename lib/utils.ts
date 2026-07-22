@@ -30,8 +30,8 @@ export function masteryLabel(score: number) {
 }
 
 export function masteryColor(score: number) {
-  if (score >= 80) return "var(--color-teal)";
-  if (score >= 60) return "var(--color-gold)";
-  if (score >= 40) return "#e88a3a";
-  return "var(--color-ember)";
+  if (score >= 80) return "var(--color-sage-deep)";
+  if (score >= 60) return "var(--color-butter-deep)";
+  if (score >= 40) return "var(--color-blush-deep)";
+  return "var(--color-danger)";
 }

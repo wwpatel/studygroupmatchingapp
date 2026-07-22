@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils";
 import type { HTMLAttributes } from "react";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  tone?: "ember" | "gold" | "teal" | "neutral" | "danger";
+  tone?: "lavender" | "butter" | "sage" | "blush" | "neutral" | "danger";
 }
 
 const toneClasses: Record<string, string> = {
-  ember: "bg-ember-soft text-ember-dark",
-  gold: "bg-gold-soft text-[#7a5a03]",
-  teal: "bg-teal-soft text-teal-dark",
+  lavender: "bg-lavender-soft text-lavender-deep",
+  butter: "bg-butter-soft text-butter-deep",
+  sage: "bg-sage-soft text-sage-deep",
+  blush: "bg-blush-soft text-blush-deep",
   neutral: "bg-line-soft text-ink-soft",
   danger: "bg-danger-soft text-danger",
 };

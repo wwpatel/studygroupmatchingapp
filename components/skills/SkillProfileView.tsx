@@ -57,7 +57,7 @@ export function SkillProfileView({
             className={cn(
               "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
               active === d.subject
-                ? "border-ink bg-ink text-paper"
+                ? "border-lavender bg-lavender text-black"
                 : "border-line text-ink-soft hover:border-ink/30",
             )}
           >
@@ -84,8 +84,8 @@ export function SkillProfileView({
                   />
                   <Radar
                     dataKey="mastery"
-                    stroke="#ff5a1f"
-                    fill="#ff5a1f"
+                    stroke="#5555cc"
+                    fill="#5555cc"
                     fillOpacity={0.28}
                     strokeWidth={2}
                   />

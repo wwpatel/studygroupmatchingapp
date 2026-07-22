@@ -1,7 +1,8 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { formComplementaryGroups, topicSummary, type StudentVector } from "@/lib/matching";
-import { generateMatchReasoning, generateSessionAgenda, AIGenerationError } from "@/lib/anthropic/generate";
+import { generateMatchReasoning, generateSessionAgenda, AIGenerationError } from "@/lib/gemini/generate";
 import type { MatchedStudentSummary } from "@/lib/types/content";
+import { subjectFilter } from "@/lib/subjects";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
   const { data: existingGroupsRaw } = await admin
     .from("groups")
     .select("id, group_members(student_id)")
-    .eq("subject", subject);
+    .ilike("subject", subjectFilter(subject));
   const existingGroups = existingGroupsRaw as unknown as
     | { id: string; group_members: { student_id: string }[] }[]
     | null;
@@ -44,7 +45,10 @@ export async function POST(request: Request) {
     if (existing) return NextResponse.json({ groupId: existing.id });
   }
 
-  const { data: topics } = await admin.from("topics").select("id, name").eq("subject", subject);
+  const { data: topics } = await admin
+    .from("topics")
+    .select("id, name")
+    .ilike("subject", subjectFilter(subject));
   const topicIds = (topics ?? []).map((t) => t.id);
   const topicNames = Object.fromEntries((topics ?? []).map((t) => [t.id, t.name]));
 
@@ -130,7 +134,7 @@ export async function POST(request: Request) {
       .from("groups")
       .insert({
         subject,
-        name: `${subject} · ${reasoning.headline}`.slice(0, 80),
+        name: `${subject} Study Group`,
         match_reasoning: JSON.stringify(reasoning),
       })
       .select("id")

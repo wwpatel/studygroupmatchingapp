@@ -111,7 +111,7 @@ export function GroupChat({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Message your group..."
-          className="flex-1 rounded-xl border border-line bg-paper px-3.5 py-2 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-ember/15"
+          className="flex-1 rounded-xl border border-line bg-paper px-3.5 py-2 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-lavender/30"
         />
         <Button type="submit" size="sm" loading={sending} disabled={!draft.trim()}>
           <Send className="size-4" />

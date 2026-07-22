@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getOrCreateTopic, applyCheckinAdjustment } from "@/lib/skill";
+import { recordEngagement } from "@/lib/gamification/engine";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -60,5 +61,12 @@ export async function POST(request: Request) {
 
   await applyCheckinAdjustment(supabase, user.id, topicId, confidenceBefore, confidenceAfter);
 
-  return NextResponse.json({ ok: true });
+  const engagement = await recordEngagement(supabase, user.id, "group_session_checkin", sessionId);
+
+  return NextResponse.json({
+    ok: true,
+    xpAwarded: engagement.xpAwarded,
+    streak: engagement.streak,
+    newBadges: engagement.newBadges,
+  });
 }

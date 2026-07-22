@@ -29,7 +29,7 @@ export default async function FlashcardsPage({ params }: { params: { contentId: 
       <h1 className="mt-2 mb-6 font-display text-2xl font-semibold tracking-tight text-ink">
         {generated.title}
       </h1>
-      <FlashcardDeck content={content} />
+      <FlashcardDeck contentId={generated.id} content={content} />
     </div>
   );
 }

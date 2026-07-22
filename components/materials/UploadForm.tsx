@@ -129,7 +129,7 @@ export function UploadForm() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-line px-4 py-8 text-center transition-colors hover:border-ember/50 hover:bg-ember-soft/40"
+                className="flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-line px-4 py-8 text-center transition-colors hover:border-lavender/50 hover:bg-lavender-soft/40"
               >
                 <UploadCloud className="size-6 text-ink-faint" />
                 <span className="text-sm font-medium text-ink">

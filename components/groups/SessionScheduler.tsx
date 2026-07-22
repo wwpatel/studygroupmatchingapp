@@ -52,10 +52,10 @@ export function SessionScheduler({
       <CardBody>
         <div className="flex items-center justify-between">
           <h3 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
-            <CalendarClock className="size-4.5 text-ember-dark" />
+            <CalendarClock className="size-4.5 text-butter-deep" />
             Session
           </h3>
-          <Badge tone={status === "completed" ? "teal" : status === "confirmed" ? "gold" : "neutral"}>
+          <Badge tone={status === "completed" ? "sage" : status === "confirmed" ? "butter" : "neutral"}>
             {status}
           </Badge>
         </div>
@@ -101,7 +101,7 @@ export function SessionScheduler({
                 type="datetime-local"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="flex-1 rounded-xl border border-line bg-paper-raised px-3 py-2 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-ember/15"
+                className="flex-1 rounded-xl border border-line bg-paper-raised px-3 py-2 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-lavender/30"
               />
               <Button type="submit" size="sm" variant="secondary" loading={loading === "propose" + new Date(time || 0).toISOString()}>
                 Propose

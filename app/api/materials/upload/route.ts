@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { checkMetricBadges } from "@/lib/gamification/engine";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -87,5 +88,8 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ materialId: material.id });
+  // Bookworm badges (upload counts aren't an XP event, just a badge metric).
+  const newBadges = await checkMetricBadges(supabase, user.id, "materials");
+
+  return NextResponse.json({ materialId: material.id, newBadges });
 }

@@ -33,12 +33,12 @@ export default async function MaterialsPage() {
       <div className="mt-8">
         <h2 className="mb-3 font-display text-lg font-semibold text-ink">Your materials</h2>
         {!materials || materials.length === 0 ? (
-          <EmptyState icon={FileText} title="No materials yet" description="Upload your first set of notes above." />
+          <EmptyState icon={FileText} tone="blush" title="No materials yet" description="Upload your first set of notes above." />
         ) : (
           <div className="space-y-2">
             {materials.map((m) => (
               <Link key={m.id} href={`/materials/${m.id}`}>
-                <Card className="transition-colors hover:border-ember/40">
+                <Card className="transition-colors hover:border-lavender/40">
                   <CardBody className="flex items-center justify-between py-4">
                     <div>
                       <p className="font-medium text-ink">{m.title}</p>

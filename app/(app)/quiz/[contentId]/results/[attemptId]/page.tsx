@@ -46,15 +46,18 @@ export default async function QuizResultsPage({
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-8 md:py-10">
-      <Link href={`/materials/${generated.material_id}`} className="text-sm text-ink-soft hover:text-ink">
-        ← Back to material
+      <Link
+        href={generated.material_id ? `/materials/${generated.material_id}` : "/chat"}
+        className="text-sm text-ink-soft hover:text-ink"
+      >
+        {generated.material_id ? "← Back to material" : "← Back to chat"}
       </Link>
 
       <Card className="mt-4">
         <CardBody className="flex flex-col items-center py-8 text-center">
           <div
             className="font-display text-5xl font-semibold"
-            style={{ color: pct >= 70 ? "var(--color-teal)" : "var(--color-ember)" }}
+            style={{ color: pct >= 70 ? "var(--color-sage-deep)" : "var(--color-blush-deep)" }}
           >
             {pct}%
           </div>
@@ -81,19 +84,19 @@ export default async function QuizResultsPage({
               <CardBody>
                 <div className="flex items-start gap-3">
                   {isCorrect ? (
-                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-teal" />
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-sage-deep" />
                   ) : (
                     <XCircle className="mt-0.5 size-5 shrink-0 text-danger" />
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-center gap-2">
-                      <Badge tone="gold">{q.topic}</Badge>
+                      <Badge tone="butter">{q.topic}</Badge>
                       <span className="text-xs text-ink-faint">Q{i + 1}</span>
                     </div>
                     <p className="text-sm font-medium text-ink">{q.prompt}</p>
                     <p className="mt-2 text-sm text-ink-soft">
                       Your answer:{" "}
-                      <span className={isCorrect ? "text-teal-dark" : "text-danger"}>
+                      <span className={isCorrect ? "text-sage-deep" : "text-danger"}>
                         {record?.studentAnswer || "(no answer)"}
                       </span>
                     </p>

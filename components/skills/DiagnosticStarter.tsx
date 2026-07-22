@@ -68,7 +68,7 @@ export function DiagnosticStarter({ suggestedSubjects }: { suggestedSubjects: st
                 setSubject(s);
                 start(s);
               }}
-              className="rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-soft transition-colors hover:border-ember/40 hover:text-ink"
+              className="rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-soft transition-colors hover:border-lavender/40 hover:text-ink"
             >
               {s}
             </button>

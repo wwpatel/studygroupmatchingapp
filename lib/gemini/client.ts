@@ -6,6 +6,12 @@ import { GoogleGenAI } from "@google/genai";
 // scope classification — worth the tradeoff for a responsive chat UI.
 export const CHAT_MODEL = "gemini-3.1-flash-lite";
 
+// Model used for structured content generation (quizzes, tests, flashcards,
+// diagnostics, grading, group match reasoning + agendas). Same reliable tier
+// as the chat model — structured output is forced via a responseSchema, so a
+// flash-lite model is plenty for producing well-formed JSON quickly.
+export const GENERATION_MODEL = "gemini-3.1-flash-lite";
+
 let client: GoogleGenAI | null = null;
 
 // Lazy singleton — constructing without an API key doesn't throw immediately

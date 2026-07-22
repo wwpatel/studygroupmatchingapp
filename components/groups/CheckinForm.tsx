@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Input";
+import { celebrate } from "@/components/gamification/Celebration";
 import { cn } from "@/lib/utils";
 import { ClipboardCheck } from "lucide-react";
 
@@ -20,7 +21,7 @@ function ScalePicker({ value, onChange }: { value: number; onChange: (v: number)
           onClick={() => onChange(n)}
           className={cn(
             "flex size-9 items-center justify-center rounded-lg border text-sm font-medium transition-colors",
-            value === n ? "border-ember bg-ember-soft text-ember-dark" : "border-line text-ink-soft hover:border-ink/30",
+            value === n ? "border-lavender bg-lavender-soft text-lavender-deep" : "border-line text-ink-soft hover:border-ink/30",
           )}
         >
           {n}
@@ -53,6 +54,7 @@ export function CheckinForm({ sessionId, topics }: { sessionId: string; topics: 
       setLoading(false);
       return;
     }
+    celebrate({ xpAwarded: data.xpAwarded, newBadges: data.newBadges });
     setDone(true);
     setLoading(false);
     router.refresh();
@@ -62,7 +64,7 @@ export function CheckinForm({ sessionId, topics }: { sessionId: string; topics: 
     return (
       <Card>
         <CardBody className="text-center">
-          <ClipboardCheck className="mx-auto size-6 text-teal" />
+          <ClipboardCheck className="mx-auto size-6 text-sage" />
           <p className="mt-2 text-sm font-medium text-ink">Thanks — your check-in was saved.</p>
         </CardBody>
       </Card>
@@ -80,7 +82,7 @@ export function CheckinForm({ sessionId, topics }: { sessionId: string; topics: 
           <select
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="w-full rounded-xl border border-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink outline-none focus:border-ink/40 focus:ring-2 focus:ring-ember/15"
+            className="w-full rounded-xl border border-line bg-paper-raised px-3.5 py-2.5 text-sm text-ink outline-none focus:border-ink/40 focus:ring-2 focus:ring-lavender/30"
           >
             {topics.map((t) => (
               <option key={t} value={t}>

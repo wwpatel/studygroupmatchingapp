@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { MatchReasoningPanel } from "@/components/groups/MatchReasoningPanel";
 import { AgendaView } from "@/components/groups/AgendaView";
 import { GroupChat } from "@/components/groups/GroupChat";
@@ -80,13 +81,18 @@ export default async function GroupDetailPage({ params }: { params: { id: string
     <div className="mx-auto max-w-5xl px-6 py-8 md:py-10">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">{group.name}</h1>
-        <Badge tone="gold">{group.subject}</Badge>
+        <Badge tone="butter">{group.subject}</Badge>
       </div>
       <div className="mt-2 flex flex-wrap gap-1.5">
         {(members ?? []).map((m) => (
-          <Badge key={m.student_id} tone="neutral">
-            {m.students?.name ?? "Member"}
-          </Badge>
+          <Link
+            key={m.student_id}
+            href={m.student_id === user.id ? "/profile" : `/profile/${m.student_id}`}
+          >
+            <Badge tone="neutral" className="cursor-pointer transition-colors hover:bg-line">
+              {m.students?.name ?? "Member"}
+            </Badge>
+          </Link>
         ))}
       </div>
 

@@ -4,8 +4,21 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { cn } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
+import { QuizRunner } from "@/components/quiz/QuizRunner";
+import { FlashcardDeck } from "@/components/flashcards/FlashcardDeck";
+import type { QuizContent, FlashcardContent } from "@/lib/types/content";
 
-export function ChatMessage({ role, content }: { role: "user" | "assistant"; content: string }) {
+export function ChatMessage({
+  role,
+  content,
+  quiz,
+  flashcards,
+}: {
+  role: "user" | "assistant";
+  content: string;
+  quiz?: { contentId: string; content: QuizContent };
+  flashcards?: { contentId: string; content: FlashcardContent };
+}) {
   const isUser = role === "user";
   return (
     <div className={cn("flex gap-3", isUser && "flex-row-reverse")}>
@@ -16,7 +29,8 @@ export function ChatMessage({ role, content }: { role: "user" | "assistant"; con
       )}
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+          "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+          quiz || flashcards ? "w-full max-w-2xl" : "max-w-[85%]",
           isUser ? "bg-ink text-paper" : "bg-paper-raised border border-line text-ink",
         )}
       >
@@ -45,7 +59,7 @@ export function ChatMessage({ role, content }: { role: "user" | "assistant"; con
                   </pre>
                 ),
                 a: ({ children, ...props }) => (
-                  <a className="text-ember-dark underline underline-offset-2" {...props}>
+                  <a className="text-lavender-deep underline underline-offset-2" {...props}>
                     {children}
                   </a>
                 ),
@@ -56,6 +70,16 @@ export function ChatMessage({ role, content }: { role: "user" | "assistant"; con
             >
               {content}
             </ReactMarkdown>
+          </div>
+        )}
+        {quiz && (
+          <div className="mt-4">
+            <QuizRunner contentId={quiz.contentId} content={quiz.content} />
+          </div>
+        )}
+        {flashcards && (
+          <div className="mt-4">
+            <FlashcardDeck contentId={flashcards.contentId} content={flashcards.content} />
           </div>
         )}
       </div>

@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { Button } from "@/components/ui/Button";
 import { Send, Sparkles, FileText, X } from "lucide-react";
+import type { QuizContent, FlashcardContent } from "@/lib/types/content";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  quiz?: { contentId: string; content: QuizContent };
+  flashcards?: { contentId: string; content: FlashcardContent };
 }
 
 interface MaterialRef {
@@ -19,13 +22,15 @@ interface MaterialRef {
 export function ChatWindow({
   initialMessages,
   material,
+  initialPrompt,
 }: {
   initialMessages: Message[];
   material?: MaterialRef | null;
+  initialPrompt?: string | null;
 }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [activeMaterial, setActiveMaterial] = useState<MaterialRef | null>(material ?? null);
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useState(initialPrompt ?? "");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -51,6 +56,23 @@ export function ChatWindow({
 
       if (!res.ok || !res.body) {
         throw new Error("Chat request failed");
+      }
+
+      // In-chat quiz generation returns a single JSON payload instead of a
+      // streamed reply, so it can carry the generated quiz alongside the text.
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        const data = await res.json();
+        setMessages((prev) => {
+          const next = [...prev];
+          next[next.length - 1] = {
+            role: "assistant",
+            content: data.message,
+            quiz: data.quiz,
+            flashcards: data.flashcards,
+          };
+          return next;
+        });
+        return;
       }
 
       const reader = res.body.getReader();
@@ -80,14 +102,14 @@ export function ChatWindow({
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col md:h-screen">
       {activeMaterial && (
-        <div className="flex items-center gap-2 border-b border-line bg-ember-soft px-4 py-2.5 text-sm text-ember-dark md:px-8">
+        <div className="flex items-center gap-2 border-b border-line bg-lavender-soft px-4 py-2.5 text-sm text-lavender-deep md:px-8">
           <FileText className="size-4 shrink-0" />
           <span className="min-w-0 truncate">
             Chatting about <strong>{activeMaterial.title}</strong> ({activeMaterial.subject})
           </span>
           <button
             onClick={() => setActiveMaterial(null)}
-            className="ml-auto flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium hover:bg-ember/15"
+            className="ml-auto flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium hover:bg-lavender/15"
           >
             <X className="size-3" /> Clear
           </button>
@@ -96,8 +118,8 @@ export function ChatWindow({
       <div ref={scrollRef} className="scrollbar-thin flex-1 space-y-4 overflow-y-auto px-4 py-6 md:px-8">
         {messages.length === 0 ? (
           <div className="mx-auto mt-16 max-w-md text-center">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-ember-soft">
-              <Sparkles className="size-6 text-ember-dark" />
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-blush-soft">
+              <Sparkles className="size-6 text-blush-deep" />
             </div>
             <h2 className="mt-4 font-display text-xl font-semibold text-ink">
               Ask Nova anything
@@ -109,7 +131,9 @@ export function ChatWindow({
             </p>
           </div>
         ) : (
-          messages.map((m, i) => <ChatMessage key={i} role={m.role} content={m.content} />)
+          messages.map((m, i) => (
+            <ChatMessage key={i} role={m.role} content={m.content} quiz={m.quiz} flashcards={m.flashcards} />
+          ))
         )}
         {sending && messages[messages.length - 1]?.content === "" && (
           <div className="flex gap-3">
@@ -150,7 +174,7 @@ export function ChatWindow({
             }}
             rows={1}
             placeholder="Ask about a concept, a homework problem, anything..."
-            className="max-h-40 flex-1 resize-none rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-ember/15"
+            className="max-h-40 flex-1 resize-none rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm outline-none focus:border-ink/40 focus:ring-2 focus:ring-lavender/30"
           />
           <Button type="submit" loading={sending} disabled={!draft.trim()}>
             <Send className="size-4" />

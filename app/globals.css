@@ -2,61 +2,65 @@
 @import "katex/dist/katex.min.css";
 
 :root {
-  --color-paper: #faf6ef;
+  /* Base: black + white. Light mode = white surface, black ink. */
+  --color-paper: #ffffff;
   --color-paper-raised: #ffffff;
-  --color-ink: #18140e;
-  --color-ink-soft: #57503f;
-  --color-ink-faint: #8a8271;
-  --color-line: #e7ddc9;
-  --color-line-soft: #f0e9d8;
+  --color-ink: #000000;
+  --color-ink-soft: #52525b;
+  --color-ink-faint: #86858a;
+  --color-line: #e2e2e5;
+  --color-line-soft: #f0f0f2;
 
-  --color-ember: #ff5a1f;
-  --color-ember-dark: #d6430d;
-  --color-ember-soft: #ffe6d9;
+  /* Accents — same 4 hues in both modes; see -soft (tint) / -deep (text-safe shade). */
+  --color-lavender: #b8b8ff;
+  --color-lavender-soft: #ececff;
+  --color-lavender-deep: #5555cc;
 
-  --color-gold: #e8a90d;
-  --color-gold-soft: #fbedc4;
+  --color-blush: #ffc2d1;
+  --color-blush-soft: #ffe9ee;
+  --color-blush-deep: #c2486b;
 
-  --color-teal: #0e6b60;
-  --color-teal-dark: #0a4f47;
-  --color-teal-soft: #d9efe9;
+  --color-sage: #a9d6b8;
+  --color-sage-soft: #e7f5ec;
+  --color-sage-deep: #2f6b45;
 
-  --color-plum: #7a3b69;
+  --color-butter: #ffe29a;
+  --color-butter-soft: #fff6de;
+  --color-butter-deep: #8a6a00;
 
+  /* Not one of the 4 brand accents — reserved for real error/destructive states. */
   --color-danger: #c81e3a;
   --color-danger-soft: #fbdde2;
 
-  --shadow-color: 24 20 14;
+  --shadow-color: 0 0 0;
 }
 
+/* Dark mode: layered dark gray (Claude/YouTube-style), not pure black.
+   Background → card → hover-fill → border step up in lightness. */
 :root[data-theme="dark"] {
-  --color-paper: #15120d;
-  --color-paper-raised: #1d1912;
-  --color-ink: #f3ecdd;
-  --color-ink-soft: #c7bda4;
-  --color-ink-faint: #8a8271;
-  --color-line: #2f2a1f;
-  --color-line-soft: #241f17;
+  --color-paper: #1e1e1e;
+  --color-paper-raised: #2a2a2a;
+  --color-ink: #ffffff;
+  --color-ink-soft: #b3b3b8;
+  --color-ink-faint: #8b8a90;
+  --color-line: #3a3a3a;
+  --color-line-soft: #333333;
 
-  --color-ember-soft: #3a1f13;
-  --color-gold-soft: #322508;
-  --color-teal-soft: #0f2b26;
+  /* Accent -soft tints stay pastel in both modes (not re-darkened here) —
+     only the danger/error tint shifts, since it isn't one of the 4 accents. */
   --color-danger-soft: #3a1119;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-paper: #15120d;
-    --color-paper-raised: #1d1912;
-    --color-ink: #f3ecdd;
-    --color-ink-soft: #c7bda4;
-    --color-ink-faint: #8a8271;
-    --color-line: #2f2a1f;
-    --color-line-soft: #241f17;
+    --color-paper: #1e1e1e;
+    --color-paper-raised: #2a2a2a;
+    --color-ink: #ffffff;
+    --color-ink-soft: #b3b3b8;
+    --color-ink-faint: #8b8a90;
+    --color-line: #3a3a3a;
+    --color-line-soft: #333333;
 
-    --color-ember-soft: #3a1f13;
-    --color-gold-soft: #322508;
-    --color-teal-soft: #0f2b26;
     --color-danger-soft: #3a1119;
   }
 }
@@ -70,18 +74,21 @@
   --color-line: var(--color-line);
   --color-line-soft: var(--color-line-soft);
 
-  --color-ember: var(--color-ember);
-  --color-ember-dark: var(--color-ember-dark);
-  --color-ember-soft: var(--color-ember-soft);
+  --color-lavender: var(--color-lavender);
+  --color-lavender-soft: var(--color-lavender-soft);
+  --color-lavender-deep: var(--color-lavender-deep);
 
-  --color-gold: var(--color-gold);
-  --color-gold-soft: var(--color-gold-soft);
+  --color-blush: var(--color-blush);
+  --color-blush-soft: var(--color-blush-soft);
+  --color-blush-deep: var(--color-blush-deep);
 
-  --color-teal: var(--color-teal);
-  --color-teal-dark: var(--color-teal-dark);
-  --color-teal-soft: var(--color-teal-soft);
+  --color-sage: var(--color-sage);
+  --color-sage-soft: var(--color-sage-soft);
+  --color-sage-deep: var(--color-sage-deep);
 
-  --color-plum: var(--color-plum);
+  --color-butter: var(--color-butter);
+  --color-butter-soft: var(--color-butter-soft);
+  --color-butter-deep: var(--color-butter-deep);
 
   --color-danger: var(--color-danger);
   --color-danger-soft: var(--color-danger-soft);
@@ -93,6 +100,7 @@
   --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   --animate-flip: flip 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   --animate-pulse-soft: pulse-soft 2.2s ease-in-out infinite;
+  --animate-confetti: confetti 1.8s ease-in forwards;
 }
 
 @keyframes fade-up {
@@ -122,6 +130,17 @@
   }
   50% {
     opacity: 0.5;
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(-10%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px) rotate(300deg);
+    opacity: 0;
   }
 }
 
@@ -160,8 +179,17 @@ kbd,
 }
 
 ::selection {
-  background: var(--color-ember);
+  background: var(--color-lavender-deep);
   color: white;
+}
+
+/* Theme-dependent wordmark: the boot script stamps data-theme before paint,
+   so exactly one of these is ever visible — no JS/hydration involvement. */
+html[data-theme="dark"] .wordmark-light {
+  display: none;
+}
+html:not([data-theme="dark"]) .wordmark-dark {
+  display: none;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -178,17 +206,17 @@ kbd,
 .bg-nova-burst {
   background-image: radial-gradient(
       circle at 15% 10%,
-      color-mix(in srgb, var(--color-ember) 18%, transparent) 0%,
+      color-mix(in srgb, var(--color-lavender) 18%, transparent) 0%,
       transparent 45%
     ),
     radial-gradient(
       circle at 85% 30%,
-      color-mix(in srgb, var(--color-teal) 16%, transparent) 0%,
+      color-mix(in srgb, var(--color-sage) 16%, transparent) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 50% 100%,
-      color-mix(in srgb, var(--color-gold) 14%, transparent) 0%,
+      color-mix(in srgb, var(--color-butter) 14%, transparent) 0%,
       transparent 50%
     );
 }

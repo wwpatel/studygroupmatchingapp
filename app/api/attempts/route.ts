@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { gradeShortAnswers, AIGenerationError } from "@/lib/anthropic/generate";
+import { gradeShortAnswers, AIGenerationError } from "@/lib/gemini/generate";
 import { updateSkillProfileFromAttempt } from "@/lib/skill";
+import { recordEngagement, type UnlockedBadge } from "@/lib/gamification/engine";
 import type { QuizContent, AnswerRecord, TopicBreakdown } from "@/lib/types/content";
 import { NextResponse } from "next/server";
 
@@ -115,11 +116,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: insertError?.message ?? "Failed to save attempt" }, { status: 500 });
   }
 
+  let masteryBadges: UnlockedBadge[] = [];
   try {
-    await updateSkillProfileFromAttempt(supabase, user.id, content.subject, topicBreakdown);
+    masteryBadges = await updateSkillProfileFromAttempt(
+      supabase,
+      user.id,
+      content.subject,
+      topicBreakdown,
+    );
   } catch {
     // Attempt is saved even if the skill-profile update has a transient failure.
   }
 
-  return NextResponse.json({ attemptId: attempt.id });
+  // Gamification: XP + streak + activity/streak badges. Never blocks the
+  // attempt result.
+  const engagement = await recordEngagement(
+    supabase,
+    user.id,
+    content.kind === "test" ? "test_completed" : "quiz_completed",
+    attempt.id,
+  );
+
+  return NextResponse.json({
+    attemptId: attempt.id,
+    xpAwarded: engagement.xpAwarded,
+    streak: engagement.streak,
+    newBadges: [...engagement.newBadges, ...masteryBadges],
+  });
 }

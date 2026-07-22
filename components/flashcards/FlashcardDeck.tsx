@@ -1,21 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FlashcardContent } from "@/lib/types/content";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { celebrate } from "@/components/gamification/Celebration";
 import { ArrowLeft, ArrowRight, Shuffle, RotateCw } from "lucide-react";
 
-export function FlashcardDeck({ content }: { content: FlashcardContent }) {
+export function FlashcardDeck({
+  contentId,
+  content,
+}: {
+  contentId?: string;
+  content: FlashcardContent;
+}) {
   const [order, setOrder] = useState(content.cards.map((_, i) => i));
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  // XP for a full review pass: fires once, when every card has been seen.
+  const seenRef = useRef<Set<number>>(new Set([0]));
+  const reportedRef = useRef(false);
 
   const card = content.cards[order[index]];
 
+  function trackSeen(cardIndex: number) {
+    seenRef.current.add(cardIndex);
+    if (reportedRef.current || !contentId) return;
+    if (seenRef.current.size < content.cards.length) return;
+    reportedRef.current = true;
+    fetch("/api/engagement", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: "flashcards_reviewed", sourceId: contentId }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) celebrate({ xpAwarded: data.xpAwarded, newBadges: data.newBadges });
+      })
+      .catch(() => {});
+  }
+
   function go(delta: number) {
     setFlipped(false);
-    setIndex((i) => (i + delta + order.length) % order.length);
+    setIndex((i) => {
+      const next = (i + delta + order.length) % order.length;
+      trackSeen(order[next]);
+      return next;
+    });
   }
 
   function shuffle() {
@@ -59,7 +90,7 @@ export function FlashcardDeck({ content }: { content: FlashcardContent }) {
             className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-line bg-paper-raised p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
             style={{ backfaceVisibility: "hidden" }}
           >
-            <Badge tone="gold" className="mb-4">
+            <Badge tone="butter" className="mb-4">
               {card.topic}
             </Badge>
             <p className="font-display text-xl font-medium text-ink">{card.front}</p>
@@ -68,7 +99,7 @@ export function FlashcardDeck({ content }: { content: FlashcardContent }) {
             </p>
           </div>
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-ember/40 bg-ember-soft p-8 text-center"
+            className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-lavender/40 bg-lavender-soft p-8 text-center"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           >
             <p className="text-lg leading-relaxed text-ink">{card.back}</p>
