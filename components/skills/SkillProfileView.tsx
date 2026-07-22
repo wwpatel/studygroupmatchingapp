@@ -68,42 +68,49 @@ export function SkillProfileView({
 
       {current && (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="rounded-2xl border border-line bg-paper-raised p-4 lg:col-span-3">
-            <div className="h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={chartData} outerRadius="75%">
-                  <PolarGrid stroke="var(--color-line)" />
-                  <PolarAngleAxis
-                    dataKey="topic"
-                    tick={{ fill: "var(--color-ink-soft)", fontSize: 12 }}
-                  />
-                  <PolarRadiusAxis
-                    domain={[0, 100]}
-                    tick={{ fill: "var(--color-ink-faint)", fontSize: 10 }}
-                    axisLine={false}
-                  />
-                  <Radar
-                    dataKey="mastery"
-                    stroke="#5555cc"
-                    fill="#5555cc"
-                    fillOpacity={0.28}
-                    strokeWidth={2}
-                  />
-                  <Tooltip
-                    formatter={(value) => [`${Math.round(Number(value))}%`, "Mastery"]}
-                    contentStyle={{
-                      borderRadius: 12,
-                      border: "1px solid var(--color-line)",
-                      background: "var(--color-paper-raised)",
-                      fontSize: 13,
-                    }}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
+          {chartData.length >= 3 && (
+            <div className="rounded-2xl border border-line bg-paper-raised p-4 lg:col-span-3">
+              <div className="h-80 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={chartData} outerRadius="75%">
+                    <PolarGrid stroke="var(--color-line)" />
+                    <PolarAngleAxis
+                      dataKey="topic"
+                      tick={{ fill: "var(--color-ink-soft)", fontSize: 12 }}
+                    />
+                    <PolarRadiusAxis
+                      domain={[0, 100]}
+                      tick={{ fill: "var(--color-ink-faint)", fontSize: 10 }}
+                      axisLine={false}
+                    />
+                    <Radar
+                      dataKey="mastery"
+                      stroke="#5555cc"
+                      fill="#5555cc"
+                      fillOpacity={0.28}
+                      strokeWidth={2}
+                    />
+                    <Tooltip
+                      formatter={(value) => [`${Math.round(Number(value))}%`, "Mastery"]}
+                      contentStyle={{
+                        borderRadius: 12,
+                        border: "1px solid var(--color-line)",
+                        background: "var(--color-paper-raised)",
+                        fontSize: 13,
+                      }}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="grid grid-cols-2 gap-2.5 lg:col-span-2 lg:grid-cols-1">
+          <div
+            className={cn(
+              "grid grid-cols-2 gap-2.5 lg:grid-cols-1",
+              chartData.length >= 3 ? "lg:col-span-2" : "lg:col-span-5",
+            )}
+          >
             {[...current.topics]
               .sort((a, b) => b.mastery - a.mastery)
               .map((t) => (
