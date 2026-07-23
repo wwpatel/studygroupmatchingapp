@@ -1,5 +1,6 @@
 import { Type, type Schema } from "@google/genai";
 import { getGeminiClient, GENERATION_MODEL } from "./client";
+import { CANONICAL_SUBJECTS, simpleTitleCase } from "@/lib/subjects";
 import type {
   QuizContent,
   FlashcardContent,
@@ -435,4 +436,40 @@ export async function generateSessionAgenda(
   const userPrompt = `Group members and their skill profiles:\n${JSON.stringify(students, null, 2)}\n\nBuild a session agenda with 3-5 agenda items covering the group's shared growth areas, each with a suggested lead student and duration. Total time should be 45-60 minutes.`;
 
   return generateStructured<GroupAgenda>(system, userPrompt, agendaSchema, 2048);
+}
+
+const canonicalizeSubjectSchema: Schema = {
+  type: Type.OBJECT,
+  properties: {
+    canonicalSubject: { type: Type.STRING },
+  },
+  required: ["canonicalSubject"],
+};
+
+// Free-text subject input ("AP Calc BC", "algebra 2", "Spanish III") needs to
+// resolve to the same subject bucket as other students studying the same
+// thing, or matching never finds them a group. Maps the raw input to the
+// closest known canonical subject (course-code/abbreviation/casing-aware),
+// falling back to a cleaned-up version of the original if it's genuinely a
+// different subject not already in use.
+export async function canonicalizeSubject(rawSubject: string): Promise<string> {
+  const trimmed = rawSubject.trim();
+  if (!trimmed) return trimmed;
+
+  const system =
+    "You normalize student-entered school subject names to a consistent canonical form, so students studying the same subject under different names (course codes, abbreviations, AP/IB/honors variants, casing, typos) end up grouped together instead of fragmented into separate buckets.";
+  const userPrompt = `Known canonical subjects already in use:\n${CANONICAL_SUBJECTS.join(", ")}\n\nStudent entered: "${trimmed}"\n\nIf this clearly refers to one of the known canonical subjects above (including AP/IB/honors variants, abbreviations, course codes, typos, or casing differences — e.g. "AP Calc BC" or "Calc BC" both mean "Calculus"; "algebra 2" means "Algebra II"), return that canonical subject's exact spelling from the list. Otherwise, if it's a genuinely different subject not covered by the list, return the input cleaned up into standard title case only — do not change its meaning.`;
+
+  try {
+    const raw = await generateStructured<{ canonicalSubject: string }>(
+      system,
+      userPrompt,
+      canonicalizeSubjectSchema,
+      256,
+    );
+    return raw.canonicalSubject.trim() || simpleTitleCase(trimmed);
+  } catch (err) {
+    console.error("[gemini] canonicalizeSubject failed, falling back to a local title-case:", err);
+    return simpleTitleCase(trimmed);
+  }
 }

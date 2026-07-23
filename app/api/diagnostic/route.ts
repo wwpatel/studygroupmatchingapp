@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { generateDiagnosticQuiz, AIGenerationError } from "@/lib/gemini/generate";
+import { generateDiagnosticQuiz, canonicalizeSubject, AIGenerationError } from "@/lib/gemini/generate";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -15,12 +15,16 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null);
-  const subject = String(body?.subject ?? "").trim();
-  if (!subject) {
+  const rawSubject = String(body?.subject ?? "").trim();
+  if (!rawSubject) {
     return NextResponse.json({ error: "Subject is required" }, { status: 400 });
   }
 
   try {
+    // Normalize course-name variants ("AP Calc BC", "algebra 2") to the same
+    // canonical bucket other students' skill profiles use, so matching can
+    // actually find them a group instead of stranding them alone.
+    const subject = await canonicalizeSubject(rawSubject);
     const content = await generateDiagnosticQuiz(subject);
 
     // Diagnostic quizzes aren't tied to an uploaded document, but
