@@ -34,13 +34,24 @@ const supabase = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
 
 const BULK_PASSWORD = "NovaBulk123!";
 const EMAIL_DOMAIN = "novabulk.school";
-const STUDENTS_PER_SUBJECT = 25;
+const STUDENTS_PER_SUBJECT = 8;
 const GRADES = ["9th grade", "10th grade", "11th grade", "12th grade"];
 
 // Matches the exact spelling the app's own placeholder suggests
 // (components/skills/DiagnosticStarter.tsx) so a real diagnostic on one of
-// these subject names lines up with this seeded cohort.
+// these subject names lines up with this seeded cohort. 25 subjects x 8
+// students = 200, giving every subject at least one full complementary
+// group (target size 4) so matching works broadly, not just for a handful
+// of common subjects.
 const SUBJECT_TOPICS: Record<string, string[]> = {
+  "Algebra I": [
+    "Linear Equations",
+    "Inequalities",
+    "Functions & Graphs",
+    "Systems of Equations",
+    "Exponents & Polynomials",
+    "Factoring",
+  ],
   "Algebra II": [
     "Quadratic Equations",
     "Polynomial Functions",
@@ -48,6 +59,38 @@ const SUBJECT_TOPICS: Record<string, string[]> = {
     "Exponential Functions",
     "Logarithms",
     "Systems of Equations",
+  ],
+  Geometry: [
+    "Triangles & Congruence",
+    "Circles",
+    "Area & Volume",
+    "Coordinate Geometry",
+    "Trigonometric Ratios",
+    "Geometric Proofs",
+  ],
+  "Pre-Calculus": [
+    "Functions & Graphs",
+    "Trigonometric Identities",
+    "Sequences & Series",
+    "Conic Sections",
+    "Vectors",
+    "Intro to Limits",
+  ],
+  Calculus: [
+    "Limits",
+    "Derivatives",
+    "Integrals",
+    "Applications of Derivatives",
+    "Related Rates",
+    "Series & Sequences",
+  ],
+  Statistics: [
+    "Descriptive Statistics",
+    "Probability",
+    "Distributions",
+    "Hypothesis Testing",
+    "Regression",
+    "Sampling Methods",
   ],
   Biology: [
     "Cell Structure",
@@ -65,6 +108,38 @@ const SUBJECT_TOPICS: Record<string, string[]> = {
     "Thermodynamics",
     "Chemical Reactions",
   ],
+  Physics: [
+    "Kinematics",
+    "Forces & Newton's Laws",
+    "Energy & Work",
+    "Waves",
+    "Electricity & Magnetism",
+    "Thermodynamics",
+  ],
+  "Environmental Science": [
+    "Ecosystems & Biomes",
+    "Biodiversity",
+    "Climate Change",
+    "Pollution & Waste",
+    "Natural Resources",
+    "Sustainability",
+  ],
+  "Earth Science": [
+    "Plate Tectonics",
+    "Weather & Climate",
+    "Rocks & Minerals",
+    "Erosion & Weathering",
+    "Astronomy Basics",
+    "Earth's Layers",
+  ],
+  "Anatomy & Physiology": [
+    "Skeletal System",
+    "Muscular System",
+    "Nervous System",
+    "Circulatory System",
+    "Respiratory System",
+    "Digestive System",
+  ],
   "US History": [
     "American Revolution",
     "Constitution & Founding",
@@ -73,13 +148,45 @@ const SUBJECT_TOPICS: Record<string, string[]> = {
     "World War I & II",
     "Civil Rights Movement",
   ],
-  Geometry: [
-    "Triangles & Congruence",
-    "Circles",
-    "Area & Volume",
-    "Coordinate Geometry",
-    "Trigonometric Ratios",
-    "Geometric Proofs",
+  "World History": [
+    "Ancient Civilizations",
+    "Medieval Europe",
+    "Renaissance & Reformation",
+    "Colonialism",
+    "World Wars",
+    "Cold War Era",
+  ],
+  "Government & Civics": [
+    "Constitutional Principles",
+    "Branches of Government",
+    "Elections & Voting",
+    "Civil Liberties",
+    "Public Policy",
+    "Comparative Government",
+  ],
+  Economics: [
+    "Supply & Demand",
+    "Market Structures",
+    "Macroeconomic Indicators",
+    "Fiscal Policy",
+    "Monetary Policy",
+    "International Trade",
+  ],
+  Psychology: [
+    "Cognitive Psychology",
+    "Developmental Psychology",
+    "Behaviorism",
+    "Personality Theory",
+    "Abnormal Psychology",
+    "Social Psychology",
+  ],
+  Philosophy: [
+    "Logic & Reasoning",
+    "Ethics",
+    "Epistemology",
+    "Metaphysics",
+    "Political Philosophy",
+    "Philosophy of Mind",
   ],
   English: [
     "Literary Analysis",
@@ -89,14 +196,6 @@ const SUBJECT_TOPICS: Record<string, string[]> = {
     "Rhetoric & Persuasion",
     "Reading Comprehension",
   ],
-  Physics: [
-    "Kinematics",
-    "Forces & Newton's Laws",
-    "Energy & Work",
-    "Waves",
-    "Electricity & Magnetism",
-    "Thermodynamics",
-  ],
   Spanish: [
     "Verb Conjugation",
     "Vocabulary",
@@ -104,6 +203,46 @@ const SUBJECT_TOPICS: Record<string, string[]> = {
     "Reading Comprehension",
     "Culture & Customs",
     "Conversation",
+  ],
+  French: [
+    "Verb Conjugation",
+    "Vocabulary",
+    "Grammar Structures",
+    "Reading Comprehension",
+    "Culture & Customs",
+    "Conversation",
+  ],
+  German: [
+    "Verb Conjugation",
+    "Vocabulary",
+    "Grammar Structures",
+    "Reading Comprehension",
+    "Culture & Customs",
+    "Conversation",
+  ],
+  "Computer Science": [
+    "Algorithms",
+    "Data Structures",
+    "Programming Fundamentals",
+    "Object-Oriented Design",
+    "Databases",
+    "Web Development Basics",
+  ],
+  "Art History": [
+    "Ancient & Classical Art",
+    "Renaissance Art",
+    "Baroque & Rococo",
+    "Modernism",
+    "Impressionism",
+    "Contemporary Art",
+  ],
+  "Music Theory": [
+    "Scales & Key Signatures",
+    "Chords & Harmony",
+    "Rhythm & Meter",
+    "Sight Reading",
+    "Composition Basics",
+    "Ear Training",
   ],
 };
 
