@@ -1159,7 +1159,7 @@ export function LandingClient() {
               margin: "0 0 40px",
             }}
           >
-            Your gaps, mapped. Your study group, matched to fill them.
+            Where every strength finds its match.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
             <Link
